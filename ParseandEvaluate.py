@@ -72,9 +72,25 @@ def clean_negations(root):
 				root.add_child(Node)
 			root.children.remove(root.children[0])
 	
+#		elif root.children[0].val == '!':
+#			root = root.children[0].children[0]
+			
 	for i in root.children:
 		clean_negations(i)
 		
+def find_not(root):
+	if root.val =='!':
+		return True
+	else:
+		if root.val not in operators:
+			return False
+		else:
+			for i in root.children:
+				val = find_not(i)
+				if val:
+					return True
+	return False
+	
 def toCNF(root):
 	remove_bimply(root)
 	# print("remove bi imply")
@@ -83,9 +99,10 @@ def toCNF(root):
 	remove_imply(root)
 	# print_dfs(root,0)
 	# print("remove negations")
-	clean_negations(root)
-	#print_dfs(root,0)
-	
+	while find_not(root):
+		print_dfs(root,0)
+		clean_negations(root)
+		
 	
 			
 	
@@ -236,25 +253,16 @@ def print_dfs(root,c):
 		print_dfs(root.children[i],c + 1)
 
 dict = {}
-for i in [True,False]:
-	dict['A'] = i
-	for j in [True,False]:
-		dict['B'] = j
-		for k in [True,False]:
-			dict['C'] = k
-			for l in [True,False]:
-				dict['D'] = l
-	
-				#expr = "! A v ( B <=> ( C <=> D ) )"
-				print(dict)
-				expr = "!B <=> ( C <=> D )"
-				list_val = expr.split(' ')		
-				root = parser(list_val)
-				print(evaluate(root,dict))
-				print("Pre_conversion")
-				print_dfs(root,0)
-				toCNF(root)
-				print("Post_conversion")
-				print_dfs(root,0)
-				print(evaluate(root,dict))
+#expr = "! A v ( B <=> ( C <=> D ) )"
+print(dict)
+expr = "!B <=> ! ( ! ( C v D ) )"
+list_val = expr.split(' ')		
+root = parser(list_val)
+#print(evaluate(root,dict))
+print("Pre_conversion")
+print_dfs(root,0)
+toCNF(root)
+print("Post_conversion")
+print_dfs(root,0)
+#print(evaluate(root,dict))
 
