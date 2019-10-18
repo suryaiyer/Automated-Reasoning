@@ -162,9 +162,11 @@ def toCNF(root):
 		clean_negations(root)
 	
 	print_dfs(root,0)	
-	subset = makeCNF(root)
+	clauses = makeCNF(root)
 	
-	print("Subset is",subset)	
+	print("Clauses are")
+	for i in clauses:
+		print(i)	
 	
 	
 def parser(list_val):
@@ -317,7 +319,7 @@ def print_dfs(root,c):
 #print(dict)
 #expr = "!B <=> ! ( ! ( C v D ) )"
 #expr = "! ( G ^ ( S => M ) )"
-expr = "! ( G ^ !M )"
+expr = "! ( G ^ !M ) v ( C ^ D )"
 
 list_val = expr.split(' ')		
 root = parser(list_val)
