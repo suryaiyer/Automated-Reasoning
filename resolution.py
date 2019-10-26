@@ -1,25 +1,8 @@
 import copy
 from CNF_converter import toCNF
 
-three_doors = [['!G', 'S'], ['!G', '!M'], ['G', 'S'], ['!G', 'M']]
-modus_potems = [['P'], ['!P', 'Q']]
-# wumpus_world = [['!P12','B11'],['!B11'],['P12']]
-wumpus_world = [['!P11'], ['!B11', 'P12', 'P21'], ['!P12', 'B11'],
-                ['!P21', 'B11'], ['!B21', 'P11', 'P22', 'P31'], ['!P11', 'B21'],
-                ['!P22', 'B21'], ['!P31', 'B21'], ['!B11'], ['B21']]
-horned_clauses_horned = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-                         ['!I', 'H'], ['!Mam', 'H'], ['!H', 'Mag']]
-doors = [['!A', 'X'], ['!X', 'A'],
-         ['!B', 'Y', 'Z'], ['!Y', 'B'], ['!Z', 'B'],
-         ['!C', 'A'], ['!C', 'B'], ['!A', '!B', 'C'],
-         ['!D', 'X'], ['!D', 'Y'], ['!X', '!Y', 'D'],
-         ['!E', 'X'], ['!E', 'Z'], ['!X', '!Z', 'E'],
-         ['!F', 'D', 'E'], ['!D', 'F'], ['!E', 'F'],
-         ['!G', '!C', 'F'], ['G', 'C'], ['G', '!F'],
-         ['!H', '!G', 'A'], ['G', 'A'], ['H', 'A'],
-         ['X', 'Y', 'Z', 'W']]
 
-
+# Check the resolution
 def PL_resolution(KB, a):
     new = []
     clauses = KB
@@ -29,7 +12,6 @@ def PL_resolution(KB, a):
 
         pair = [(clauses[i], clauses[j]) for i in range(n) for j in range(i + 1, n)]
 
-        # print(pair, 'pair')
         for (Ci, Cj) in pair:
             resolvents = PL_Resolve(Ci, Cj)
 
@@ -41,11 +23,7 @@ def PL_resolution(KB, a):
                 print(resolvents, min(len(Ci), len(Cj)))
                 new = union(resolvents, new)
 
-        # print(new)
-        # print('Clauses:',clauses)
         if is_subset(clauses, new) and len(new) < len(clauses):
-            # print(clauses , len(clauses))
-            # print(new, len(new), 'new')
             print('Resolution answer: False')
             return False
 
@@ -53,13 +31,10 @@ def PL_resolution(KB, a):
             if clause not in clauses:
                 clauses.append(clause)
         new = []
-    # print(resolvents)
 
 
 def PL_Resolve(Ci, Cj):
     clause = []
-    org_clause = [Ci, Cj]
-    # print(org_clause)
 
     for i in Ci:
         for j in Cj:
@@ -76,15 +51,8 @@ def PL_Resolve(Ci, Cj):
                         clause.append(clause_set)
                 else:
                     clause.append(clause_set)
-    # print('Resolve clause:', clause)
+
     return clause
-
-
-# def remove(item, clause):
-#     if isinstance(clause, str):
-#         return clause.replace(item, '')
-#     else:
-#         return [i for i in clause if i != item]
 
 
 def remove(clause, item):
@@ -121,20 +89,6 @@ def is_subset(list_set, subsets):
             break
     return check
 
-
-# print('Modus Poten Answer:')
-# PL_resolution(clauses)
-# print('')
-#
-#
-# print('Wumpus World Answer:')
-# PL_resolution(wumpus_world)
-# print("")
-# PL_Resolve(['P', '!Q'], ['!P', 'Q'])
-
-# PL_Resolve(['P'], ['!P'])
-
-
 # Horn Clauses: Mythical = Myt
 #             Immortal = I
 #             Mammal = Mam
@@ -144,25 +98,5 @@ def is_subset(list_set, subsets):
 # 2. !Myt => !I ^ Mam   =   Myt V(!I ^ Mam) =   (Myt V !I) ^ (Myt V Mam)
 # 3. I V Mam => H   =   !(I V Mam) V H  =   (!I ^ !Mam) V H  = (!I V H) ^ (!Mam V H)
 # 4. H => Mag   =   !H V Mag
-# horned_clauses_mythical=[['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-#                 ['!I','H'],['!Mam', 'H'],['!H','Mag'],['!Myt']]
-# print('Can the unicorn be mythical?')
-# PL_resolution(horned_clauses_mythical)
-# print("")
-#
-# horned_clauses_magical = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-#                           ['!I', 'H'], ['!Mam', 'H'], ['!H', 'Mag'], ['!Mag']]
-# print('Can the unicorn be magical?')
-# PL_resolution(horned_clauses_magical)
-# print("")
-#
 
-# print('Can the unicorn be horned?')
-# PL_resolution(horned_clauses_horned)
-# print('')
-
-# print('3 doors')
-# PL_resolution(three_doors, ['!S'])
-
-
-PL_resolution(doors, ['W'])
+# PL_resolution(doors, ['W'])
