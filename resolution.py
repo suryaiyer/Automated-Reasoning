@@ -1,15 +1,29 @@
 import copy
+from CNF_converter import toCNF
 
-clauses = [['P'], ['!P', 'Q'], ['!Q']]
+three_doors = [['!G', 'S'], ['!G', '!M'], ['G', 'S'], ['!G', 'M']]
+modus_potems = [['P'], ['!P', 'Q']]
 # wumpus_world = [['!P12','B11'],['!B11'],['P12']]
 wumpus_world = [['!P11'], ['!B11', 'P12', 'P21'], ['!P12', 'B11'],
                 ['!P21', 'B11'], ['!B21', 'P11', 'P22', 'P31'], ['!P11', 'B21'],
-                ['!P22', 'B21'], ['!P31', 'B21'], ['!B11'], ['B21'], ['!P12']]
+                ['!P22', 'B21'], ['!P31', 'B21'], ['!B11'], ['B21']]
+horned_clauses_horned = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
+                         ['!I', 'H'], ['!Mam', 'H'], ['!H', 'Mag']]
+doors = [['!A', 'X'], ['!X', 'A'],
+         ['!B', 'Y', 'Z'], ['!Y', 'B'], ['!Z', 'B'],
+         ['!C', 'A'], ['!C', 'B'], ['!A', '!B', 'C'],
+         ['!D', 'X'], ['!D', 'Y'], ['!X', '!Y', 'D'],
+         ['!E', 'X'], ['!E', 'Z'], ['!X', '!Z', 'E'],
+         ['!F', 'D', 'E'], ['!D', 'F'], ['!E', 'F'],
+         ['!G', '!C', 'F'], ['G', 'C'], ['G', '!F'],
+         ['!H', '!G', 'A'], ['G', 'A'], ['H', 'A'],
+         ['X', 'Y', 'Z', 'W']]
 
 
-def PL_resolution(clauses):
+def PL_resolution(KB, a):
     new = []
-
+    clauses = KB
+    clauses.append(a)
     while True:
         n = len(clauses)
 
@@ -19,17 +33,17 @@ def PL_resolution(clauses):
         for (Ci, Cj) in pair:
             resolvents = PL_Resolve(Ci, Cj)
 
-
             if set() in resolvents:
                 print('Resolution answer: True')
                 return True
 
-            if resolvents:
+            if resolvents and len(resolvents[0]) <= max(len(Ci), len(Cj)):
+                print(resolvents, min(len(Ci), len(Cj)))
                 new = union(resolvents, new)
 
         # print(new)
         # print('Clauses:',clauses)
-        if is_subset(clauses, new)and len(new) < len(clauses):
+        if is_subset(clauses, new) and len(new) < len(clauses):
             # print(clauses , len(clauses))
             # print(new, len(new), 'new')
             print('Resolution answer: False')
@@ -108,14 +122,14 @@ def is_subset(list_set, subsets):
     return check
 
 
-print('Modus Poten Answer:')
-PL_resolution(clauses)
-print('')
-
-
-print('Wumpus World Answer:')
-PL_resolution(wumpus_world)
-print("")
+# print('Modus Poten Answer:')
+# PL_resolution(clauses)
+# print('')
+#
+#
+# print('Wumpus World Answer:')
+# PL_resolution(wumpus_world)
+# print("")
 # PL_Resolve(['P', '!Q'], ['!P', 'Q'])
 
 # PL_Resolve(['P'], ['!P'])
@@ -130,19 +144,25 @@ print("")
 # 2. !Myt => !I ^ Mam   =   Myt V(!I ^ Mam) =   (Myt V !I) ^ (Myt V Mam)
 # 3. I V Mam => H   =   !(I V Mam) V H  =   (!I ^ !Mam) V H  = (!I V H) ^ (!Mam V H)
 # 4. H => Mag   =   !H V Mag
-horned_clauses_mythical=[['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-                ['!I','H'],['!Mam', 'H'],['!H','Mag'],['!Myt']]
-print('Can the unicorn be mythical?')
-PL_resolution(horned_clauses_mythical)
-print("")
+# horned_clauses_mythical=[['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
+#                 ['!I','H'],['!Mam', 'H'],['!H','Mag'],['!Myt']]
+# print('Can the unicorn be mythical?')
+# PL_resolution(horned_clauses_mythical)
+# print("")
+#
+# horned_clauses_magical = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
+#                           ['!I', 'H'], ['!Mam', 'H'], ['!H', 'Mag'], ['!Mag']]
+# print('Can the unicorn be magical?')
+# PL_resolution(horned_clauses_magical)
+# print("")
+#
 
-horned_clauses_magical = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-                          ['!I', 'H'], ['!Mam', 'H'], ['!H', 'Mag'], ['!Mag']]
-print('Can the unicorn be magical?')
-PL_resolution(horned_clauses_magical)
-print("")
+# print('Can the unicorn be horned?')
+# PL_resolution(horned_clauses_horned)
+# print('')
 
-horned_clauses_horned = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-                ['!I','H'],['!Mam', 'H'], ['!H','Mag'],['!H']]
-print('Can the unicorn be horned?')
-PL_resolution(horned_clauses_horned)
+# print('3 doors')
+# PL_resolution(three_doors, ['!S'])
+
+
+PL_resolution(doors, ['W'])
