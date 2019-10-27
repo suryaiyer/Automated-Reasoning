@@ -5,11 +5,30 @@ from CNF_converter import parser, evaluate
 #a = "Q"
 
 # Wumpus World
-KB = "!P11 ^ ( B11 <=> ( P12 v P21 ) ) ^ ( B21 <=> ( P11 v P22 v P31 ) ) ^ !B11 ^ B21"
+#KB = "!P11 ^ ( B11 <=> ( P12 v P21 ) ) ^ ( B21 <=> ( P11 v P22 v P31 ) ) ^ !B11 ^ B21"
 #KB = "!P12"
-a = "!P12"
+#a = "!P12"
+
+# Three doors
+#KB = "! ( G ^ ( S => M ) ) ^ ! ( !G ^ !S ) ^ ! ( G ^ !M )"
+#a = "!G"
+
+# Unicorn
+#KB = "( My => I ) ^ ( !My => ( !I ^ m ) ) ^ ( ( I v m ) => H ) ^ ( H => Ma )"
+#a = "H"
+
+# Doors of Enlightenment
+
+KB = "( A <=> X ) ^ ( B <=> ( Y v Z ) ) ^ ( C <=> ( A ^ B ) ) ^ ( D <=> ( X ^ Y ) ) ^ ( E <=> ( X ^ Z ) ) ^ ( F <=> ( D v E ) ) ^ ( G <=> ( C => F ) ) ^ ( H <=> ( ( G ^ H ) => A ) ) ^ ( X v Y v Z v W )"
+a = "!W"
+print('Doors of Enlightenment Test')
+print('Knowledge base:')
+print(KB)
+print('Query: ', a)
 
 not_symbols = ['!','v','^','<=>','=>','(',')']
+
+
 
 # Check if KB entails a
 def TT_Entails(KB, a):
@@ -55,4 +74,13 @@ def symbolParser(sentence, symbolsList):
 		i = i + 1
 
 # Test Functionality
-print(TT_Entails(KB,a))
+aEntails = TT_Entails(KB,a);
+if a[0] == '!':
+	bEntails = TT_Entails(KB, a[1:len(a)] )
+else:
+	bEntails = TT_Entails(KB, '!' + a)
+
+if aEntails == False and bEntails == False:
+	print("Ans with model checking: MAYBE")
+else:
+	print("Ans with model checking: ", aEntails)

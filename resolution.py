@@ -1,74 +1,62 @@
-clauses = [['P'], ['!P', 'Q'], ['Q']]
-# wumpus_world = [['!P12','B11'],['!B11'],['P12']]
-wumpus_world = [['!P11'], ['!B11', 'P12', 'P21'], ['!P12', 'B11'],
-                ['!P21', 'B11'], ['!B21', 'P11', 'P22', 'P31'], ['!P11', 'B21'],
-                ['!P22', 'B21'], ['!P31', 'B21'], ['!B11'], ['B21'], ['!P12']]
+import copy
+from CNF_converter import toCNF
 
 
-def PL_resolution(clauses):
+# Check the resolution
+def PL_resolution(KB, a):
     new = []
-    new_clauses = set()
-    pair = []
-
-    # for c in clauses:
-    #     new_clauses=[frozenset(c)]
-
-    # print(new_clauses,'1')
+    clauses = KB
+    clauses.append(a)
     while True:
         n = len(clauses)
-        # print(n,'2')
-        for i in range(n):
-            for j in range(i + 1, n):
-                pair.append((clauses[i], clauses[j]))
 
-        # print(pair, 'pair')
+        pair = [(clauses[i], clauses[j]) for i in range(n) for j in range(i + 1, n)]
+
         for (Ci, Cj) in pair:
             resolvents = PL_Resolve(Ci, Cj)
-            # print("Resolvents:", resolvents)
 
             if set() in resolvents:
-                print('True')
+                print('Resolution answer: True')
                 return True
 
-            if resolvents:
+            if resolvents and len(resolvents[0]) <= max(len(Ci), len(Cj)):
+                print(resolvents, min(len(Ci), len(Cj)))
                 new = union(resolvents, new)
 
-        # print(new)
-        if is_subset(clauses, new):
-            print('False')
+        if is_subset(clauses, new) and len(new) < len(clauses):
+            print('Resolution answer: False')
             return False
 
         for clause in new:
             if clause not in clauses:
                 clauses.append(clause)
         new = []
-    # print(resolvents)
 
 
 def PL_Resolve(Ci, Cj):
     clause = []
-    org_clause = [Ci, Cj]
-    # print(org_clause)
 
     for i in Ci:
         for j in Cj:
-            # print(i)
             if (i == '!' + j) or (j == '!' + i):
                 clause_set = unique(remove(i, set(Ci)), remove(j, set(Cj)))
-                clause.append(clause_set)
-    # print(clause)
+                copy_clause_set = copy.deepcopy(clause_set)
+                if len(clause_set) > 1:
+                    for item1 in copy_clause_set:
+                        for item2 in copy_clause_set:
+                            if item1 != item2 and (item1 == '!' + item2 or item2 == '!' + item1):
+                                clause_set = []
+
+                    if clause_set:
+                        clause.append(clause_set)
+                else:
+                    clause.append(clause_set)
+
     return clause
 
 
-# def remove(item, clause):
-#     if isinstance(clause, str):
-#         return clause.replace(item, '')
-#     else:
-#         return [i for i in clause if i != item]
-
-
-def remove(clause='', item=set()):
-    item.discard(clause)
+def remove(clause, item):
+    item.remove(clause)
     return item
 
 
@@ -84,8 +72,8 @@ def union(sets, list_set):
 
     for s in sets:
         check = False
-        for contain_set in list_set:
-            if contain_set == sets:
+        for ls in list_set:
+            if ls == s:
                 check = True
         if not check:
             list_set.append(s)
@@ -98,8 +86,17 @@ def is_subset(list_set, subsets):
     for subset in subsets:
         if subset in list_set:
             check = True
+            break
     return check
 
+# Horn Clauses: Mythical = Myt
+#             Immortal = I
+#             Mammal = Mam
+#             Horned = H
+#             Magical = Mag
+# 1. Myt => I   =   !Myt V I
+# 2. !Myt => !I ^ Mam   =   Myt V(!I ^ Mam) =   (Myt V !I) ^ (Myt V Mam)
+# 3. I V Mam => H   =   !(I V Mam) V H  =   (!I ^ !Mam) V H  = (!I V H) ^ (!Mam V H)
+# 4. H => Mag   =   !H V Mag
 
-PL_resolution(wumpus_world)
-# PL_Resolve(['P'], ['!P', 'Q'])
+# PL_resolution(doors, ['W'])
