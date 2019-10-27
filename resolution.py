@@ -16,15 +16,15 @@ def PL_resolution(KB, a):
             resolvents = PL_Resolve(Ci, Cj)
 
             if set() in resolvents:
-                print('Resolution answer: True')
+         #       print('Resolution answer: True')
                 return True
 
             if resolvents and len(resolvents[0]) <= max(len(Ci), len(Cj)):
-                print(resolvents, min(len(Ci), len(Cj)))
+          #      print(resolvents, min(len(Ci), len(Cj)))
                 new = union(resolvents, new)
 
         if is_subset(clauses, new) and len(new) < len(clauses):
-            print('Resolution answer: False')
+           # print('Resolution answer: False')
             return False
 
         for clause in new:
