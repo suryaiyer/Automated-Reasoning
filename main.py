@@ -1,10 +1,10 @@
 from model_checking import TT_Entails
 from resolution import PL_resolution
-
+import time
 
 def execute(problem,KB_model,alpha,KB_resolution):
 	#print('\n')
-	print(problem,':')
+	print(problem,':','\n')
 	f.write(problem + ':' + '\n')
 	print('Knowledge base',KB_model)
 	print('KB IS ', KB_resolution)
@@ -20,7 +20,7 @@ def execute(problem,KB_model,alpha,KB_resolution):
 	
 		if aEntails == False and bEntails == False:
 			print("Ans for",problem,"with model checking: MAYBE")
-			f.write("Ans for" + problem + " with model checking: MAYBE")
+			f.write("Ans for" + problem + " with model checking: MAYBE \n\n")
 		else:
 			print("Ans for",problem,"with model checking: ", aEntails)
 			f.write("Ans for " + problem + " with model checking: " + str(aEntails)+ "\n\n")
@@ -50,8 +50,11 @@ def execute(problem,KB_model,alpha,KB_resolution):
 				
 		else:
 			print("Ans for",problem,"with Resolution: ", False)
-			f.write("Ans for " + problem + " with Resolution: ", str(False)+ "\n\n")
+			f.write("Ans for " + problem + " with Resolution: " + str(False)+ "\n\n")
 			
+
+			
+start_time = time.time()
 
 f= open("output.txt",'w')			
 # Modus Ponens
@@ -63,7 +66,7 @@ execute("Modus Ponens Test",KB,a,modus_ponens)
 
 # Wumpus World
 KB = "!P11 ^ ( B11 <=> ( P12 v P21 ) ) ^ ( B21 <=> ( P11 v P22 v P31 ) ) ^ !B11 ^ B21"
-a = ["!P12"]
+a = ["P12"]
 
 wumpus_world = [['!P11'], ['!B11', 'P12', 'P21'], ['!P12', 'B11'],
                 ['!P21', 'B11'], ['!B21', 'P11', 'P22', 'P31'], ['!P11', 'B21'],
@@ -104,3 +107,5 @@ doors = [['!A', 'X'], ['!X', 'A'],
 		 ['!G','!C','L'],['G','C'],['G','!L']]
 execute("Doors of Enlightenment -Lius's",KB,a,doors)
 f.close()
+print("--- %s seconds ---" % (time.time() - start_time))
+   
