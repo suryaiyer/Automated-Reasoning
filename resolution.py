@@ -2,7 +2,7 @@ import copy
 from CNF_converter import toCNF
 
 
-# Check the resolution
+# Check the resolution if the query is true or false
 def PL_resolution(KB, a):
     new = []
     clauses = KB
@@ -16,15 +16,12 @@ def PL_resolution(KB, a):
             resolvents = PL_Resolve(Ci, Cj)
 
             if set() in resolvents:
-         #       print('Resolution answer: True')
                 return True
 
             if resolvents and len(resolvents[0]) <= max(len(Ci), len(Cj)):
-          #      print(resolvents, min(len(Ci), len(Cj)))
                 new = union(resolvents, new)
 
         if is_subset(clauses, new) and len(new) < len(clauses):
-           # print('Resolution answer: False')
             return False
 
         for clause in new:
@@ -33,6 +30,7 @@ def PL_resolution(KB, a):
         new = []
 
 
+# Resolvent function that return a list with different resolve set
 def PL_Resolve(Ci, Cj):
     clause = []
 
@@ -55,11 +53,13 @@ def PL_Resolve(Ci, Cj):
     return clause
 
 
+# Remove 2 items that complement i.e., A and !A
 def remove(clause, item):
     item.remove(clause)
     return item
 
 
+# Return the set that unique and sorted
 def unique(Ci, Cj):
     unique_set = Ci
     for item in Cj:
@@ -67,6 +67,7 @@ def unique(Ci, Cj):
     return unique_set
 
 
+# add the set to list set
 def union(sets, list_set):
     list_set = list(list_set)
 
@@ -80,6 +81,7 @@ def union(sets, list_set):
     return list_set
 
 
+# check if set is the subset of list set
 def is_subset(list_set, subsets):
     check = False
 
@@ -88,15 +90,3 @@ def is_subset(list_set, subsets):
             check = True
             break
     return check
-
-# Horn Clauses: Mythical = Myt
-#             Immortal = I
-#             Mammal = Mam
-#             Horned = H
-#             Magical = Mag
-# 1. Myt => I   =   !Myt V I
-# 2. !Myt => !I ^ Mam   =   Myt V(!I ^ Mam) =   (Myt V !I) ^ (Myt V Mam)
-# 3. I V Mam => H   =   !(I V Mam) V H  =   (!I ^ !Mam) V H  = (!I V H) ^ (!Mam V H)
-# 4. H => Mag   =   !H V Mag
-
-# PL_resolution(doors, ['W'])
