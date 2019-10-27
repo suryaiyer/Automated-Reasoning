@@ -21,10 +21,10 @@ from CNF_converter import parser, evaluate
 
 KB = "( A <=> X ) ^ ( B <=> ( Y v Z ) ) ^ ( C <=> ( A ^ B ) ) ^ ( D <=> ( X ^ Y ) ) ^ ( E <=> ( X ^ Z ) ) ^ ( F <=> ( D v E ) ) ^ ( G <=> ( C => F ) ) ^ ( H <=> ( ( G ^ H ) => A ) ) ^ ( X v Y v Z v W )"
 a = "!W"
-print('Doors of Enlightenment Test')
-print('Knowledge base:')
-print(KB)
-print('Query: ', a)
+# print('Doors of Enlightenment Test')
+# print('Knowledge base:')
+# print(KB)
+# print('Query: ', a)
 
 not_symbols = ['!','v','^','<=>','=>','(',')']
 
@@ -74,13 +74,13 @@ def symbolParser(sentence, symbolsList):
 		i = i + 1
 
 # Test Functionality
-aEntails = TT_Entails(KB,a);
-if a[0] == '!':
-	bEntails = TT_Entails(KB, a[1:len(a)] )
-else:
-	bEntails = TT_Entails(KB, '!' + a)
+# aEntails = TT_Entails(KB,a);
+# if a[0] == '!':
+	# bEntails = TT_Entails(KB, a[1:len(a)] )
+# else:
+	# bEntails = TT_Entails(KB, '!' + a)
 
-if aEntails == False and bEntails == False:
-	print("Ans with model checking: MAYBE")
-else:
-	print("Ans with model checking: ", aEntails)
+# if aEntails == False and bEntails == False:
+	# print("Ans with model checking: MAYBE")
+# else:
+	# print("Ans with model checking: ", aEntails)
