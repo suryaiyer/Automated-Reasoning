@@ -4,13 +4,15 @@ from resolution import PL_resolution
 
 def execute(problem,KB_model,alpha,KB_resolution):
 	#print('\n')
-	print(problem,':',"\n")
-	print('Knowledge base',KB_model,)
+	print(problem,':')
+	f.write(problem + ':' + '\n')
+	print('Knowledge base',KB_model)
+	print('KB IS ', KB_resolution)
 	
 	for a in alpha:
-		print('Query:',a,'\n')
-	
-		aEntails = TT_Entails(KB,a);
+		print('\n','Query:',a,'\n')
+		f.write('\n' +'Query: '+ a +'\n\n')
+		aEntails = TT_Entails(KB_model,a);
 		if a[0] == '!':
 			bEntails = TT_Entails(KB_model, a[1:len(a)] )
 		else:
@@ -18,26 +20,40 @@ def execute(problem,KB_model,alpha,KB_resolution):
 	
 		if aEntails == False and bEntails == False:
 			print("Ans for",problem,"with model checking: MAYBE")
+			f.write("Ans for" + problem + " with model checking: MAYBE")
 		else:
 			print("Ans for",problem,"with model checking: ", aEntails)
-			print("So by modelchecking",KB,"entails",a,"\n")
-	
+			f.write("Ans for " + problem + " with model checking: " + str(aEntails)+ "\n\n")
+			if aEntails:
+				print("So by modelchecking",KB_model,"entails",a,"\n")
+				f.write("So by modelchecking " + KB_model + " entails " + a + "\n\n")
 		if a[0] == '!':
-			aResolution = PL_resolution(KB_resolution, [a[1:len(a)]])
-			bResolution = PL_resolution(KB_resolution, [a])
+			KB = [i for i in KB_resolution]	
+			aResolution = PL_resolution(KB, [a[1:len(a)]])
+			KB = [i for i in KB_resolution]	
+			bResolution = PL_resolution(KB, [a])
 		else:
-			aResolution = PL_resolution(KB_resolution, ['!' + a])
-			bResolution = PL_resolution(KB_resolution, [a])
+			KB = [i for i in KB_resolution]	
+			aResolution = PL_resolution(KB, ['!' + a])
+			KB = [i for i in KB_resolution]	
+			bResolution = PL_resolution(KB, [a])
 
-		if aEntails == False and bEntails == False:
-			print("Ans for",problem,"with model checking: MAYBE")
+		if aResolution == False and bResolution == False:
+			print("Ans for",problem,"with Resolution: MAYBE")
+			f.write("Ans for " + problem + " with Resolution: MAYBE"+ "\n\n")
+			
 		elif aResolution:
 			print("Ans for",problem,"with Resolution: ", True)
-			print("So by Resolution",KB,"entails",a,"\n")
+			f.write("Ans for " + problem + " with Resolution: " + str(True)+ "\n\n")
+			print("So by Resolution",KB_model,"entails",a,"\n")
+			f.write("So by Resolution " + KB_model + " entails " + a + "\n\n")
+				
 		else:
 			print("Ans for",problem,"with Resolution: ", False)
-		
+			f.write("Ans for " + problem + " with Resolution: ", str(False)+ "\n\n")
 			
+
+f= open("output.txt",'w')			
 # Modus Ponens
 KB = "( P => Q ) ^ P"
 modus_ponens = [['P'], ['!P', 'Q']]
@@ -57,10 +73,10 @@ execute("Wumpus World",KB,a,wumpus_world)
 				
 				
 # Unicorn
-KB = "( My => I ) ^ ( !My => ( !I ^ m ) ) ^ ( ( I v m ) => H ) ^ ( H => Ma )"
-horned_clauses = [['!Myt', 'I'], ['Myt', '!I'], ['Myt', 'Mam'],
-                  ['!I', 'H'], ['!Mam', 'H'], ['!H', 'Mag']]
-a = ["H"]
+KB = "( Mythical => Immortal ) ^ ( !Mythical => ( !Immortal ^ Mammal ) ) ^ ( ( Immortal v Mammal ) => Horned ) ^ ( Horned => Magical )"
+horned_clauses = [['!Mythical', 'Immortal'], ['Mythical', '!Immortal'], ['Mythical', 'Mammal'],
+                  ['!Immortal', 'Horned'], ['!Mammal', 'Horned'], ['!Horned', 'Magical']]
+a = ["Horned","Mythical","Magical"]
 execute("Unicorn",KB,a,horned_clauses)
 
 
@@ -78,4 +94,13 @@ doors = [['!A', 'X'], ['!X', 'A'],
          ['!H', '!G', 'A'], ['G', 'A'], ['H', 'A'],
          ['X', 'Y', 'Z', 'W']]
 
-execute("Doors of Enlightenment",KB,a,doors)
+execute("Doors of Enlightenment -Smullyan's",KB,a,doors)
+
+KB = "( A <=> X ) ^ ( H <=> ( ( G ^ H ) => A ) ) ^ ( C <=> A ) ^ ( G <=> ( C => L ) )"
+a = ['X','Y','Z','W']		 
+doors = [['!A', 'X'], ['!X', 'A'],
+		 ['!H', '!G', 'A'], ['G', 'A'], ['H', 'A'],
+         ['!A', 'C'], ['!C', 'A'],
+		 ['!G','!C','L'],['G','C'],['G','!L']]
+execute("Doors of Enlightenment -Lius's",KB,a,doors)
+f.close()
