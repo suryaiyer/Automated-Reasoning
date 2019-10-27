@@ -12,15 +12,11 @@ So by Resolution ( P => Q ) ^ P entails Q
 
 Wumpus World:
 
-Query: !P12
+Query: P12
 
-Ans for Wumpus World with model checking: True
+Ans for Wumpus World with model checking: False
 
-So by modelchecking !P11 ^ ( B11 <=> ( P12 v P21 ) ) ^ ( B21 <=> ( P11 v P22 v P31 ) ) ^ !B11 ^ B21 entails !P12
-
-Ans for Wumpus World with Resolution: True
-
-So by Resolution !P11 ^ ( B11 <=> ( P12 v P21 ) ) ^ ( B21 <=> ( P11 v P22 v P31 ) ) ^ !B11 ^ B21 entails !P12
+Ans for Wumpus World with Resolution: False
 
 Unicorn:
 
